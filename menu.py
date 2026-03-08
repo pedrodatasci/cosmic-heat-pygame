@@ -8,22 +8,47 @@ from classes.constants import WIDTH, HEIGHT, BLACK, WHITE, RED
 from settings import get_fullscreen, set_fullscreen
 
 
+def get_screen_size():
+    if is_fullscreen:
+        return screen.get_width(), screen.get_height()
+    return WIDTH, HEIGHT - 80
+
+
+def scale_pos(x, y):
+    screen_w, screen_h = get_screen_size()
+    return int(x * screen_w / WIDTH), int(y * screen_h / HEIGHT)
+
+
+def scale_rect(rect):
+    screen_w, screen_h = get_screen_size()
+    return pygame.Rect(
+        int(rect.x * screen_w / WIDTH),
+        int(rect.y * screen_h / HEIGHT),
+        int(rect.width * screen_w / WIDTH),
+        int(rect.height * screen_h / HEIGHT)
+    )
+
+
 def animate_screen():
+    screen_w, screen_h = get_screen_size()
+    scaled_bg = pygame.transform.scale(mainmenu_img, (screen_w, screen_h))
     for i in range(0, 20):
-        screen.blit(mainmenu_img, (0, 0))
+        screen.blit(scaled_bg, (0, 0))
         pygame.display.flip()
         pygame.time.wait(10)
-        screen.blit(mainmenu_img, (random.randint(-5, 5), random.randint(-5, 5)))
+        screen.blit(scaled_bg, (random.randint(-5, 5), random.randint(-5, 5)))
         pygame.display.flip()
         pygame.time.wait(10)
 
 
 def apply_display_mode(fullscreen):
-    global screen
+    global screen, mainmenu_img_scaled
     if fullscreen:
         screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN | pygame.NOFRAME)
     else:
         screen = pygame.display.set_mode((WIDTH, HEIGHT - 80))
+    screen_w, screen_h = screen.get_width(), screen.get_height()
+    mainmenu_img_scaled = pygame.transform.scale(mainmenu_img, (screen_w, screen_h))
 
 
 pygame.mixer.init()
@@ -48,9 +73,10 @@ clock = pygame.time.Clock()
 mainmenu_img = pygame.image.load('images/mainmenu.jpg').convert()
 mainmenu_img = pygame.transform.scale(mainmenu_img, (WIDTH, HEIGHT))
 
+screen_w, screen_h = screen.get_width(), screen.get_height()
+mainmenu_img_scaled = pygame.transform.scale(mainmenu_img, (screen_w, screen_h))
+
 logo_img = pygame.image.load('images/ch.png').convert_alpha()
-logo_x = (WIDTH - logo_img.get_width()) // 2
-logo_y = 50
 
 play_button_rect = pygame.Rect(WIDTH // 2 - 100, HEIGHT // 2 - 50, 205, 50)
 options_button_rect = pygame.Rect(WIDTH // 2 - 100, HEIGHT // 2 + 25, 205, 50)
@@ -71,54 +97,68 @@ if pygame.joystick.get_count() > 0:
 
 
 def draw_main_menu():
-    screen.blit(mainmenu_img, (0, 0))
-    screen.blit(logo_img, (logo_x, logo_y))
+    screen_w, screen_h = get_screen_size()
+    screen.blit(mainmenu_img_scaled, (0, 0))
+    
+    scale_x = screen_w / WIDTH
+    scale_y = screen_h / HEIGHT
+    
+    scaled_logo = pygame.transform.scale(logo_img, (int(logo_img.get_width() * scale_x), int(logo_img.get_height() * scale_y)))
+    logo_x = (screen_w - scaled_logo.get_width()) // 2
+    logo_y = int(50 * scale_y)
+    screen.blit(scaled_logo, (logo_x, logo_y))
 
-    font = pygame.font.SysFont('Comic Sans MS', 40)
+    font_size = int(40 * min(scale_x, scale_y))
+    font = pygame.font.SysFont('Comic Sans MS', font_size)
     
-    # Play button
+    play_scaled = scale_rect(play_button_rect)
+    options_scaled = scale_rect(options_button_rect)
+    quit_scaled = scale_rect(quit_button_rect)
+    
     text = font.render("Play", True, WHITE)
-    pygame.draw.rect(screen, BLACK, play_button_rect, border_radius=10)
+    pygame.draw.rect(screen, BLACK, play_scaled, border_radius=10)
     if selected_button == 0:
-        pygame.draw.rect(screen, RED, play_button_rect, border_radius=10, width=4)
-    text_rect = text.get_rect()
-    text_rect.center = play_button_rect.center
+        pygame.draw.rect(screen, RED, play_scaled, border_radius=10, width=4)
+    text_rect = text.get_rect(center=play_scaled.center)
     screen.blit(text, text_rect)
     
-    # Options button
     text = font.render("Options", True, WHITE)
-    pygame.draw.rect(screen, BLACK, options_button_rect, border_radius=10)
+    pygame.draw.rect(screen, BLACK, options_scaled, border_radius=10)
     if selected_button == 1:
-        pygame.draw.rect(screen, RED, options_button_rect, border_radius=10, width=4)
-    text_rect = text.get_rect()
-    text_rect.center = options_button_rect.center
+        pygame.draw.rect(screen, RED, options_scaled, border_radius=10, width=4)
+    text_rect = text.get_rect(center=options_scaled.center)
     screen.blit(text, text_rect)
     
-    # Exit button
     text = font.render("Exit", True, WHITE)
-    pygame.draw.rect(screen, BLACK, quit_button_rect, border_radius=10)
+    pygame.draw.rect(screen, BLACK, quit_scaled, border_radius=10)
     if selected_button == 2:
-        pygame.draw.rect(screen, RED, quit_button_rect, border_radius=10, width=4)
-    text_rect = text.get_rect()
-    text_rect.center = quit_button_rect.center
+        pygame.draw.rect(screen, RED, quit_scaled, border_radius=10, width=4)
+    text_rect = text.get_rect(center=quit_scaled.center)
     screen.blit(text, text_rect)
+    
+    return play_scaled, options_scaled, quit_scaled
 
 
 def draw_options_menu():
     global is_fullscreen
-    screen.blit(mainmenu_img, (0, 0))
+    screen_w, screen_h = get_screen_size()
+    screen.blit(mainmenu_img_scaled, (0, 0))
     
-    font_title = pygame.font.SysFont('Comic Sans MS', 50)
-    font = pygame.font.SysFont('Comic Sans MS', 35)
+    scale_x = screen_w / WIDTH
+    scale_y = screen_h / HEIGHT
     
-    # Title
+    font_title_size = int(50 * min(scale_x, scale_y))
+    font_size = int(35 * min(scale_x, scale_y))
+    font_title = pygame.font.SysFont('Comic Sans MS', font_title_size)
+    font = pygame.font.SysFont('Comic Sans MS', font_size)
+    
     title_text = font_title.render("Options", True, WHITE)
-    title_rect = title_text.get_rect(center=(WIDTH // 2, 100))
+    title_rect = title_text.get_rect(center=(screen_w // 2, int(100 * scale_y)))
     screen.blit(title_text, title_rect)
     
-    # Screen mode option
     mode_text = "Fullscreen" if is_fullscreen else "Windowed"
-    screen_mode_rect = pygame.Rect(WIDTH // 2 - 150, HEIGHT // 2 - 50, 300, 50)
+    screen_mode_rect_base = pygame.Rect(WIDTH // 2 - 150, HEIGHT // 2 - 50, 300, 50)
+    screen_mode_rect = scale_rect(screen_mode_rect_base)
     pygame.draw.rect(screen, BLACK, screen_mode_rect, border_radius=10)
     if selected_button == 0:
         pygame.draw.rect(screen, RED, screen_mode_rect, border_radius=10, width=4)
@@ -127,8 +167,8 @@ def draw_options_menu():
     mode_label_rect = mode_label.get_rect(center=screen_mode_rect.center)
     screen.blit(mode_label, mode_label_rect)
     
-    # Menu button (bottom-right corner)
-    menu_button_rect = pygame.Rect(WIDTH - 160, HEIGHT - 70, 140, 50)
+    menu_button_rect_base = pygame.Rect(WIDTH - 160, HEIGHT - 70, 140, 50)
+    menu_button_rect = scale_rect(menu_button_rect_base)
     pygame.draw.rect(screen, BLACK, menu_button_rect, border_radius=10)
     if selected_button == 1:
         pygame.draw.rect(screen, RED, menu_button_rect, border_radius=10, width=4)
@@ -142,6 +182,8 @@ def draw_options_menu():
 
 while show_menu:
     if not in_options:
+        play_scaled, options_scaled, quit_scaled = draw_main_menu()
+        
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -149,17 +191,17 @@ while show_menu:
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 x, y = event.pos
-                if play_button_rect.collidepoint(x, y):
+                if play_scaled.collidepoint(x, y):
                     explosion_sound.play()
                     animate_screen()
                     show_menu = False
                     import main
                     main.main()
                     break
-                elif options_button_rect.collidepoint(x, y):
+                elif options_scaled.collidepoint(x, y):
                     in_options = True
                     selected_button = 0
-                elif quit_button_rect.collidepoint(x, y):
+                elif quit_scaled.collidepoint(x, y):
                     pygame.quit()
                     sys.exit()
 
@@ -207,7 +249,6 @@ while show_menu:
                     elif event.value[1] == -1:
                         selected_button = (selected_button + 1) % 3
 
-        draw_main_menu()
     else:
         screen_mode_rect, menu_button_rect = draw_options_menu()
         
