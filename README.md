@@ -28,6 +28,11 @@ The game includes an Options menu accessible from the main menu where you can cu
 
 Your display preference is automatically saved and will be remembered the next time you launch the game.
 
+## Collectibles
+
+- **Gold Coin**: Awards 20 points when collected
+- **Green Bonus Coin**: Awards 26 points (30% more than gold coins). These rare coins only appear during intense battles when there are 4 or more enemies on screen, rewarding skilled players who survive difficult encounters.
+
 ## Gameplay
 
 [![Cosmic Heat](https://img.youtube.com/vi/ghcX5IXoPLY/0.jpg)](https://www.youtube.com/watch?v=ghcX5IXoPLY "Cosmic Heat")

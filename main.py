@@ -11,7 +11,7 @@ from settings import get_fullscreen
 
 from classes.player import Player
 from classes.bullets import Bullet
-from classes.refill import BulletRefill, HealthRefill, DoubleRefill, ExtraScore
+from classes.refill import BulletRefill, HealthRefill, DoubleRefill, ExtraScore, BonusCoin
 from classes.meteors import Meteors, Meteors2, BlackHole
 from classes.explosions import Explosion, Explosion2
 from classes.enemies import Enemy1, Enemy2
@@ -43,6 +43,7 @@ double_refill_group = pygame.sprite.Group()
 meteor_group = pygame.sprite.Group()
 meteor2_group = pygame.sprite.Group()
 extra_score_group = pygame.sprite.Group()
+bonus_coin_group = pygame.sprite.Group()
 black_hole_group = pygame.sprite.Group()
 enemy2_bullets = pygame.sprite.Group()
 
@@ -312,6 +313,15 @@ while running:
 
         extra_score_group.add(extra_score)
 
+    total_enemies = len(enemy1_group) + len(enemy2_group) + len(boss1_group) + len(boss2_group) + len(boss3_group)
+    if total_enemies >= 4 and random.randint(0, 120) == 0:
+        bonus_coin = BonusCoin(
+            random.randint(50, WIDTH - 50),
+            random.randint(-HEIGHT, -50 - extra_score_img.get_rect().height),
+            extra_score_img,
+        )
+        bonus_coin_group.add(bonus_coin)
+
     if score > 3000 and random.randint(0, 100) == 0:
         meteor_img = random.choice(meteor_imgs)
         meteor_object = Meteors(
@@ -356,6 +366,7 @@ while running:
         health_refill_group.empty()
         double_refill_group.empty()
         extra_score_group.empty()
+        bonus_coin_group.empty()
         black_hole_group.empty()
         meteor_group.empty()
         meteor2_group.empty()
@@ -432,6 +443,24 @@ while running:
             extra_score.speed = 6
         if score >= 20000:
             extra_score.speed = 8
+
+    for bonus_coin in bonus_coin_group:
+        bonus_coin.update()
+        bonus_coin.draw(screen)
+
+        if player.rect.colliderect(bonus_coin.rect):
+            score += bonus_coin.score_value
+            bonus_coin.kill()
+            bonus_coin.sound_effect.play()
+
+        if score >= 3000:
+            bonus_coin.speed = 2
+        if score >= 10000:
+            bonus_coin.speed = 4
+        if score >= 15000:
+            bonus_coin.speed = 6
+        if score >= 20000:
+            bonus_coin.speed = 8
 
     for double_refill in double_refill_group:
         double_refill.update()

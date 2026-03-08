@@ -114,3 +114,34 @@ class ExtraScore(pygame.sprite.Sprite):
 
     def draw(self, surface):
         surface.blit(self.image, self.rect)
+
+
+class BonusCoin(pygame.sprite.Sprite):
+
+    def __init__(self, x, y, image):
+        super().__init__()
+        self.original_image = self._apply_green_tint(image)
+        self.image = self.original_image.copy()
+        self.rect = self.image.get_rect()
+        self.speed = 2
+        self.rect.x = x
+        self.rect.y = y
+        self.direction_x = 0
+        self.direction_y = 1
+        self.score_value = 26
+        self.sound_effect = pygame.mixer.Sound("game_sounds/refill/extra_score.mp3")
+        self.sound_effect.set_volume(0.5)
+
+    def _apply_green_tint(self, image):
+        tinted = image.copy()
+        tinted.fill((0, 180, 80), special_flags=pygame.BLEND_RGB_MULT)
+        return tinted
+
+    def update(self):
+        self.rect.y += self.speed * self.direction_y
+
+        if self.rect.bottom >= HEIGHT + 100:
+            self.kill()
+
+    def draw(self, surface):
+        surface.blit(self.image, self.rect)
