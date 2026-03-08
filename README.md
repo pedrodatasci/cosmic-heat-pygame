@@ -18,6 +18,16 @@ Just a 2D space shooter from a neighboring parallel world. It was written using 
 - pause - P
 - exit - Esc
 
+## Options Menu
+
+The game includes an Options menu accessible from the main menu where you can customize your display settings:
+
+- **Screen Mode**: Toggle between Fullscreen and Windowed mode
+  - Fullscreen: Game runs in true fullscreen mode covering the entire display
+  - Windowed: Game runs in a window
+
+Your display preference is automatically saved and will be remembered the next time you launch the game.
+
 ## Gameplay
 
 [![Cosmic Heat](https://img.youtube.com/vi/ghcX5IXoPLY/0.jpg)](https://www.youtube.com/watch?v=ghcX5IXoPLY "Cosmic Heat")

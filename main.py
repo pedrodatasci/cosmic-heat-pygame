@@ -7,6 +7,7 @@ from controls import move_player, move_player_with_joystick
 from classes.constants import WIDTH, HEIGHT, FPS, SHOOT_DELAY
 from functions import show_game_over, music_background
 from menu import show_menu
+from settings import get_fullscreen
 
 from classes.player import Player
 from classes.bullets import Bullet
@@ -19,7 +20,10 @@ from classes.bosses import Boss1, Boss2, Boss3
 
 pygame.init()
 music_background()
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
+if get_fullscreen():
+    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN | pygame.NOFRAME)
+else:
+    screen = pygame.display.set_mode((WIDTH, HEIGHT - 80))
 surface = pygame.Surface((WIDTH, HEIGHT))
 pygame.display.set_caption("Cosmic Heat")
 clock = pygame.time.Clock()
