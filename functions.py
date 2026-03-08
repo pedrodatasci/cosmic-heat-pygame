@@ -1,5 +1,8 @@
 import pygame
+import os
+import sys
 from classes.constants import WIDTH, HEIGHT
+from settings import set_high_score
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
@@ -22,8 +25,15 @@ def show_game_over(score):
     pygame.display.flip()
     pygame.mixer.music.load('game_sounds/gameover.mp3')
     pygame.mixer.music.play()
+    set_high_score(score)
     pygame.time.delay(4000)
-    music_background()
+    restart_game()
+
+
+def restart_game():
+    pygame.quit()
+    python = sys.executable
+    os.execl(python, python, "menu.py")
 
 
 def show_game_win():

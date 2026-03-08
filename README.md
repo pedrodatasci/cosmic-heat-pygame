@@ -33,6 +33,10 @@ Your display preference is automatically saved and will be remembered the next t
 - **Gold Coin**: Awards 20 points when collected
 - **Green Bonus Coin**: Awards 26 points (30% more than gold coins). These rare coins only appear during intense battles when there are 4 or more enemies on screen, rewarding skilled players who survive difficult encounters.
 
+## High Score
+
+Your best score is saved and displayed on the main menu. Beat your personal record as you improve your skills! The high score persists between game sessions.
+
 ## Gameplay
 
 [![Cosmic Heat](https://img.youtube.com/vi/ghcX5IXoPLY/0.jpg)](https://www.youtube.com/watch?v=ghcX5IXoPLY "Cosmic Heat")

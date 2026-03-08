@@ -5,7 +5,7 @@ import pygame
 import pygame.mixer
 
 from classes.constants import WIDTH, HEIGHT, BLACK, WHITE, RED
-from settings import get_fullscreen, set_fullscreen
+from settings import get_fullscreen, set_fullscreen, get_high_score
 
 
 def get_screen_size():
@@ -135,6 +135,14 @@ def draw_main_menu():
         pygame.draw.rect(screen, RED, quit_scaled, border_radius=10, width=4)
     text_rect = text.get_rect(center=quit_scaled.center)
     screen.blit(text, text_rect)
+    
+    high_score = get_high_score()
+    if high_score is not None:
+        hs_font_size = int(28 * min(scale_x, scale_y))
+        hs_font = pygame.font.SysFont('Comic Sans MS', hs_font_size)
+        hs_text = hs_font.render(f"High Score: {high_score}", True, (255, 215, 0))
+        hs_rect = hs_text.get_rect(center=(screen_w // 2, quit_scaled.bottom + int(40 * scale_y)))
+        screen.blit(hs_text, hs_rect)
     
     return play_scaled, options_scaled, quit_scaled
 

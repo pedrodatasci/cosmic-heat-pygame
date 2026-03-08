@@ -29,3 +29,18 @@ def set_fullscreen(value):
     settings = load_settings()
     settings["fullscreen"] = value
     save_settings(settings)
+
+
+def get_high_score():
+    settings = load_settings()
+    return settings.get("high_score", None)
+
+
+def set_high_score(value):
+    settings = load_settings()
+    current_high = settings.get("high_score", 0)
+    if value > current_high:
+        settings["high_score"] = value
+        save_settings(settings)
+        return True
+    return False
