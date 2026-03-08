@@ -6,6 +6,7 @@ import pygame.mixer
 
 from classes.constants import WIDTH, HEIGHT, BLACK, WHITE, RED
 from settings import get_fullscreen, set_fullscreen, get_high_score
+from game import run_game
 
 
 def get_screen_size():
@@ -202,10 +203,10 @@ while show_menu:
                 if play_scaled.collidepoint(x, y):
                     explosion_sound.play()
                     animate_screen()
-                    show_menu = False
-                    import main
-                    main.main()
-                    break
+                    run_game()
+                    apply_display_mode(is_fullscreen)
+                    pygame.mixer.music.load('game_sounds/menu.mp3')
+                    pygame.mixer.music.play(-1)
                 elif options_scaled.collidepoint(x, y):
                     in_options = True
                     selected_button = 0
@@ -222,11 +223,10 @@ while show_menu:
                     if selected_button == 0:
                         explosion_sound.play()
                         animate_screen()
-                        show_menu = False
-                        screen.fill(BLACK)
-                        import main
-                        main.main()
-                        break
+                        run_game()
+                        apply_display_mode(is_fullscreen)
+                        pygame.mixer.music.load('game_sounds/menu.mp3')
+                        pygame.mixer.music.play(-1)
                     elif selected_button == 1:
                         in_options = True
                         selected_button = 0
@@ -240,11 +240,10 @@ while show_menu:
                         if selected_button == 0:
                             explosion_sound.play()
                             animate_screen()
-                            show_menu = False
-                            screen.fill(BLACK)
-                            import main
-                            main.main()
-                            break
+                            run_game()
+                            apply_display_mode(is_fullscreen)
+                            pygame.mixer.music.load('game_sounds/menu.mp3')
+                            pygame.mixer.music.play(-1)
                         elif selected_button == 1:
                             in_options = True
                             selected_button = 0
